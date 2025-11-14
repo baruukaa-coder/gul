@@ -1,6 +1,6 @@
 fastapi==0.109.2
 uvicorn[standard]==0.22.0
-pymongo==4.5.1
+pymongo==4.15.4
 python-dotenv==1.0.0
 passlib[bcrypt]==1.8.1
 python-jose==3.3.0
