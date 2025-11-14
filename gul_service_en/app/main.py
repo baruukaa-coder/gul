@@ -1,12 +1,19 @@
-from fastapi import FastAPI
-from app.adapters.http.flower_router import router as flower_router
+from fastapi import FastAPI, HTTPException
+from pymongo import MongoClient
+import os
 
-def create_app() -> FastAPI:
-    app = FastAPI(title="gul_service — Flower Store API")
-    app.include_router(flower_router)
+app = FastAPI()
 
-    @app.get("/healthz")
-    async def health():
-        return {"status": "ok"}
+mongo_uri = os.environ.get("MONGO_URI")
+db_name = os.environ.get("DB_NAME")
 
-    return app
+client = MongoClient(mongo_uri)
+db = client[db_name]
+
+@app.get("/health/db")
+def health_db():
+    try:
+        db.list_collection_names()
+        return {"status": "ok", "db": db_name}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
